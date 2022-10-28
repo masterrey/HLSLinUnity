@@ -1,4 +1,4 @@
-Shader "PUCLitShader"
+Shader "PUCLitShaderNormal"
 {
     Properties
     {
@@ -48,21 +48,21 @@ Shader "PUCLitShader"
                     Output.positionVAR = TransformObjectToHClip(position);
                     Output.uvVAR = Input.uv;
                     Output.colorVar = Input.color;
-                    
+                    Output.normalVar = Input.normal;
 
                     return Output;
                 }
 
                 half4 frag(Varyings Input) :SV_TARGET
                 { 
-                    half4 color = Input.color;
+                    half4 color = Input.colorVar;
                     
                     Light l = GetMainLight();
 
-                   // float intensity = dot(l.direction, TransformObjectToWorldNormal(Input.normal));
+                   float intensity = dot(l.direction, TransformObjectToWorldNormal(Input.normalVar));
 
                     color *= _MainTex.Sample(sampler_MainTex, Input.uvVAR);
-                    
+                    color *= intensity;
                     return color;
                 }
 
