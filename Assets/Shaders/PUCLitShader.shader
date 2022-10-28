@@ -59,7 +59,9 @@ Shader "PUCLitShaderNormal"
                     
                     Light l = GetMainLight();
 
-                   float intensity = dot(l.direction, TransformObjectToWorldNormal(Input.normalVar));
+                   half4 normalmap= _NormalTex.Sample(sampler_NormalTex, Input.uvVAR)*2-1;
+
+                   float intensity = dot(l.direction, TransformObjectToWorldNormal(Input.normalVar+ normalmap.xyz));
 
                     color *= _MainTex.Sample(sampler_MainTex, Input.uvVAR);
                     color *= intensity;
