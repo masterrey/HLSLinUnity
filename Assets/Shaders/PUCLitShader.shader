@@ -4,7 +4,7 @@ Shader "PUCLitShaderNormal"
     {
         _MainTex ("Texture", 2D) = "white" {}
         _NormalTex("Texture", 2D) = "white" {}
-        
+        _NormalForce("NormalForce", Range(-2,2)) = 1
     }
         SubShader
         {
@@ -23,7 +23,7 @@ Shader "PUCLitShaderNormal"
                 SamplerState sampler_MainTex;
                 texture2D _NormalTex;
                 SamplerState sampler_NormalTex;
-
+                float _NormalForce;
 
                 struct Attributes
                 {
@@ -48,7 +48,7 @@ Shader "PUCLitShaderNormal"
                     Output.positionVAR = TransformObjectToHClip(position);
                     Output.uvVAR = Input.uv;
                     Output.colorVar = Input.color;
-                    Output.normalVar = Input.normal;
+                    Output.normalVar = TransformObjectToWorldNormal(Input.normal);
 
                     return Output;
                 }
@@ -61,7 +61,7 @@ Shader "PUCLitShaderNormal"
 
                    half4 normalmap= _NormalTex.Sample(sampler_NormalTex, Input.uvVAR)*2-1;
 
-                   float intensity = dot(l.direction, TransformObjectToWorldNormal(Input.normalVar+ normalmap.xyz));
+                   float intensity = dot(l.direction, Input.normalVar+ normalmap.xzy* _NormalForce);
 
                     color *= _MainTex.Sample(sampler_MainTex, Input.uvVAR);
                     color *= intensity;
