@@ -66,7 +66,9 @@ Shader "PUCLitShaderOcean"
                    half4 normalmap2 = _NormalTex.Sample(sampler_NormalTex, half2( Input.uvVAR.x, _Time.x + Input.uvVAR.y)) * 2 - 1;
                   
                    normalmap *= normalmap2;
-                   float intensity = dot(l.direction, Input.normalVar+ normalmap.xzy* _NormalForce);
+
+                   half3 normal = Input.normalVar + normalmap.xzy * _NormalForce;
+                   float intensity = dot(l.direction, normal);
 
                     color *= _MainTex.Sample(sampler_MainTex, Input.uvVAR);
                     color *= intensity;
